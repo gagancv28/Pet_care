@@ -61,9 +61,15 @@ async function connectAndStart() {
   // Seed on first run
   await seedDatabase();
 
-  app.listen(PORT, () => {
-    console.log(`[Server] 🚀 PetCare Planner API → http://localhost:${PORT}`);
-  });
+  if (process.env.VERCEL !== '1') {
+    app.listen(PORT, () => {
+      console.log(`[Server] 🚀 PetCare Planner API → http://localhost:${PORT}`);
+    });
+  }
 }
 
-connectAndStart();
+if (process.env.NODE_ENV !== 'test' && process.env.VERCEL !== '1') {
+  connectAndStart();
+}
+
+module.exports = { app, connectAndStart };

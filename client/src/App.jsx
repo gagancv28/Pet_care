@@ -104,12 +104,15 @@ function ToastContainer() {
 const toast = (msg, type = 'success') => globalAddToast && globalAddToast(msg, type);
 
 // ── API Helpers ─────────────────────────────────────────────────────────────
+const API_BASE = (import.meta.env.VITE_API_URL || '').replace(/\/$/, '');
+const withBase = (path) => `${API_BASE}${path}`;
+
 const api = {
-  get:    (path)       => fetch(path).then(r => r.json()),
-  post:   (path, body) => fetch(path, { method: 'POST',  headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) }).then(r => r.json()),
-  put:    (path, body) => fetch(path, { method: 'PUT',   headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) }).then(r => r.json()),
-  patch:  (path, body) => fetch(path, { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) }).then(r => r.json()),
-  delete: (path)       => fetch(path, { method: 'DELETE' }).then(r => r.json()),
+  get:    (path)       => fetch(withBase(path)).then(r => r.json()),
+  post:   (path, body) => fetch(withBase(path), { method: 'POST',  headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) }).then(r => r.json()),
+  put:    (path, body) => fetch(withBase(path), { method: 'PUT',   headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) }).then(r => r.json()),
+  patch:  (path, body) => fetch(withBase(path), { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) }).then(r => r.json()),
+  delete: (path)       => fetch(withBase(path), { method: 'DELETE' }).then(r => r.json()),
 };
 
 function Spinner({ dark }) {
