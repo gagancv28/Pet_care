@@ -228,6 +228,41 @@ Pet_care/
 
 ---
 
+## Deployment Guide
+
+### Option 1: Deploy to Vercel (Frontend & Full-Stack Serverless)
+
+The repository is configured with `vercel.json` and `client/vercel.json` for seamless deployment to [Vercel](https://vercel.com):
+
+1. **Deploy Frontend on Vercel**:
+   - Import `https://github.com/gagancv28/Pet_care.git` into Vercel.
+   - Set **Root Directory** to `client`.
+   - Framework preset: **Vite**.
+   - Build Command: `npm run build`.
+   - Output Directory: `dist`.
+   - Add Environment Variable:
+     - `VITE_API_URL`: Your deployed backend API URL (e.g., `https://petcare-planner-api.onrender.com/api` or `/api` if deployed full-stack).
+
+---
+
+### Option 2: Deploy Backend to Render
+
+The repository includes a ready-to-use [`render.yaml`](render.yaml) blueprint:
+
+1. Log in to [Render](https://render.com) and click **New +** -> **Blueprint** (or **Web Service**).
+2. Connect `https://github.com/gagancv28/Pet_care.git`.
+3. If setting up manually:
+   - **Root Directory**: `server`
+   - **Environment**: `Node`
+   - **Build Command**: `npm install`
+   - **Start Command**: `node index.js`
+   - **Environment Variables**:
+     - `PORT`: `10000` (or `5000`)
+     - `MONGODB_URI`: Your MongoDB Atlas connection string (e.g., `mongodb+srv://<user>:<password>@cluster0.mongodb.net/petcare_planner?retryWrites=true&w=majority`). If omitted, it will automatically run with the built-in in-memory fallback.
+4. Once deployed, copy your Render service URL (e.g., `https://petcare-planner-api.onrender.com`) and paste it as `VITE_API_URL` in your Vercel frontend dashboard.
+
+---
+
 ## Environment Variables
 
 ### Backend (`server/.env`)
@@ -246,3 +281,4 @@ VITE_API_URL=http://localhost:5000/api
 ## License
 
 This project is licensed under the terms of the [MIT License](LICENSE).
+
