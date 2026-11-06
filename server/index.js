@@ -1,4 +1,6 @@
-require('dotenv').config();
+const path = require('path');
+require('dotenv').config({ path: path.join(__dirname, '.env') });
+require('dotenv').config(); // fallback to root or default environment
 const express = require('express');
 const cors = require('cors');
 const mongoose = require('mongoose');
@@ -39,13 +41,13 @@ const PORT        = process.env.PORT        || 5000;
 const MONGODB_URI = process.env.MONGODB_URI || process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/petcare_planner';
 
 async function connectAndStart() {
-  // 1. Try local mongod first
+  // 1. Try configured MongoDB (Atlas or local mongod)
   try {
-    await mongoose.connect(MONGODB_URI, { serverSelectionTimeoutMS: 3000 });
-    console.log('[DB] Connected to local MongoDB ->', MONGODB_URI);
+    await mongoose.connect(MONGODB_URI, { serverSelectionTimeoutMS: 10000 });
+    console.log('[DB] Connected to MongoDB ->', MONGODB_URI.replace(/:([^:@]+)@/, ':****@'));
   } catch (_localErr) {
     // 2. Fall back to mongodb-memory-server
-    console.warn('[DB] ⚠️  Local MongoDB unavailable — falling back to mongodb-memory-server …');
+    console.warn('[DB] ⚠️  Configured MongoDB unavailable (' + _localErr.message + ') — falling back to mongodb-memory-server …');
     try {
       const { MongoMemoryServer } = require('mongodb-memory-server');
       const memServer = await MongoMemoryServer.create();
