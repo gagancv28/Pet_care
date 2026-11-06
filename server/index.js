@@ -21,8 +21,16 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use(cors());
+app.use(cors({
+  origin: true, // Reflects the request origin, allowing all Vercel domains & localhost
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
 app.use(express.json({ limit: '1mb' }));
+
+// Root health & info check
+app.get('/', (req, res) => res.json({ status: 'ok', message: 'PetCare API is live' }));
 
 // ── Routes ─────────────────────────────────────────────────────────────────
 app.use('/api/pets',     petsRouter);

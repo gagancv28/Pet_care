@@ -104,8 +104,18 @@ function ToastContainer() {
 const toast = (msg, type = 'success') => globalAddToast && globalAddToast(msg, type);
 
 // ── API Helpers ─────────────────────────────────────────────────────────────
-const API_BASE = (import.meta.env.VITE_API_URL || '').replace(/\/$/, '');
-const withBase = (path) => `${API_BASE}${path}`;
+const rawApiUrl = (import.meta.env.VITE_API_URL || '').trim().replace(/\/+$/, '');
+const API_BASE = rawApiUrl
+  ? (rawApiUrl.endsWith('/api') ? rawApiUrl : `${rawApiUrl}/api`)
+  : '/api';
+
+const withBase = (path) => {
+  // Normalize path so it cleanly attaches to API_BASE without duplicate /api
+  const cleanPath = path.startsWith('/api/')
+    ? path.slice(4) // strips leading '/api' leaving '/...'
+    : (path.startsWith('/') ? path : `/${path}`);
+  return `${API_BASE}${cleanPath}`;
+};
 
 const api = {
   get:    (path)       => fetch(withBase(path)).then(r => r.json()),
